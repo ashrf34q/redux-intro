@@ -1,10 +1,30 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { createCustomer } from "./customerSlice";
 
 function Customer() {
   const [fullName, setFullName] = useState("");
   const [nationalId, setNationalId] = useState("");
 
-  function handleClick() {}
+  const dispatch = useDispatch();
+
+  function handleClick() {
+    if (!fullName || !nationalId) return;
+    dispatch(createCustomer(fullName, nationalId));
+
+    setFullName("");
+    setNationalId("");
+  }
+
+  // useEffect(function () {
+  //   const cameraFeed = document.getElementById("camerafeed");
+  //   navigator.mediaDevices
+  //     .getUserMedia({ video: true })
+  //     .then((stream) => {
+  //       cameraFeed.srcObject = stream;
+  //     })
+  //     .catch((error) => console.log(error));
+  // }, []);
 
   return (
     <div>
@@ -24,6 +44,7 @@ function Customer() {
             onChange={(e) => setNationalId(e.target.value)}
           />
         </div>
+        {/* <video id="camerafeed" autoPlay></video> */}
         <button onClick={handleClick}>Create new customer</button>
       </div>
     </div>
