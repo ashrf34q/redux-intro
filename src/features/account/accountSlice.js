@@ -32,10 +32,27 @@ export default function accountReducer(state = initialStateAccount, action) {
   }
 }
 
+const host = "api.frankfurter.app";
+
 // Action creators for account
 
-export function deposit(amount) {
-  return { type: "account/deposit", payload: amount };
+export function deposit(amount, currency) {
+  if (currency === "USD") return { type: "account/deposit", payload: amount };
+
+  // Redux knows this is the asynchronous function
+  // that needs to run before dispatch
+  return async function (dispatch, getState) {
+    // API call
+
+    const resp = await fetch(
+      `https://${host}/latest?amount=${amount}&from=${currency}&to=USD`
+    );
+    const data = await resp.json();
+    const converted = data.rates.USD;
+
+    dispatch({ type: "account/deposit", payload: converted });
+    // return action
+  };
 }
 
 export function withdraw(amount) {
